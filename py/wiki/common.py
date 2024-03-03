@@ -14,26 +14,29 @@ def load_fm(md_filename):
 
 def sanitize_name(name):
     """Convert a human-readable name to a sanitized ID."""
-    return re.sub(r'[^a-z0-9]+', '-', name.lower()).strip('-')
+    id = re.sub(r'[^a-z0-9]+', '-', name.lower()).strip('-')
+    if id == 'untagged':
+        # TODO: warning - this could result in a partially completed transaction
+        raise UserWarning(f"Error: Cannot use name '{name}' as 'untagged' is reserved")
+    return id
 
-def create(title, id, tags):
+# TODO: defer to make transactional
+def create_page(title, id, tags):
+
     md_filename = os.path.join(Config().pages_dir, f"{id}.md")
 
     content = f"# {title}\n\nThis page is a stub"
 
-    # force tags into a set for consistent handling
-    tags = set(tags)
-
     if Path(md_filename).exists():
-        print("Updated existing page...\n")
+        print(f"Updating existing page '{title}' ({id})")
         fm_data = load_fm(md_filename)
         fm_tags = set(fm_data['tags'])
-        fm_data['tags'] = list(fm_tags.union(tags))
+        fm_data['tags'] = list(fm_tags.union(tags if tags else set()))
     else:
-        print("Creating a new page...\n")
+        print(f"Creating a new page '{title}' ({id})")
         fm_data = {
         "title": title,
-        "tags": list(tags)
+        "tags": list(tags) if tags else []
     }
 
     page = frontmatter.Post(content, **fm_data)

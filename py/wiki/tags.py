@@ -1,21 +1,20 @@
-import re
-import csv
 import os
 
-from py.wiki.common import load_fm, create
-from pathlib import Path
-
+from py.wiki.common import load_fm
 from py.wiki.config import Config
 
 def get_tag_counts(tags):
 
-    counts = {}
+    counts = { "untagged": 0 }
 
     directory = Config().pages_dir
     for filename in os.listdir(directory):
         if filename.endswith(".md"):
             filepath = os.path.join(directory, filename)
             fm_tags = load_fm(filepath)['tags']
+            if len(fm_tags) < 1:
+                counts['untagged'] = counts['untagged'] + 1
+                continue
             for tag in tags.keys():
                 if tag in fm_tags:
                     if tag in counts.keys():
@@ -40,27 +39,3 @@ def load_tags():
             tags[tag] = title
 
     return tags
-
-
-def create_or_get_tag(tag_id):
-    tags = load_tags()
-
-    if tag_id in tags.keys():
-        return tag_id
-    else:
-        return create_or_update_tag(tag_id)
-    
-
-def create_or_update_tag(tag_id, human_readable_name=None):
-    """Add or update a tag in the database and create its Markdown page."""
-    # Read the existing database
-    tags = load_tags()
-
-    # Update or add the tag
-    title = human_readable_name if human_readable_name else tag_id
-    tags[tag_id] = title
-
-    # Create or update the Markdown file for the tag
-    create(title, tag_id, set())
-
-    return tag_id
