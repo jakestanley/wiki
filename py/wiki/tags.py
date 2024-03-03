@@ -7,6 +7,24 @@ from pathlib import Path
 
 from py.wiki.config import Config
 
+def get_tag_counts(tags):
+
+    counts = {}
+
+    directory = Config().pages_dir
+    for filename in os.listdir(directory):
+        if filename.endswith(".md"):
+            filepath = os.path.join(directory, filename)
+            fm_tags = load_fm(filepath)['tags']
+            for tag in tags.keys():
+                if tag in fm_tags:
+                    if tag in counts.keys():
+                        counts[tag] = counts[tag] + 1
+                    else:
+                        counts[tag] = 1
+
+    return counts
+
 def load_tags():
 
     tags = {}
@@ -21,15 +39,7 @@ def load_tags():
             title = load_fm(filepath)['title']
             tags[tag] = title
 
-
-    # if os.path.exists(db_path):
-    #     with open(db_path, 'r', newline='') as db_file:
-    #         reader = csv.reader(db_file, delimiter=',')
-    #         for row in reader:
-    #             if len(row) == 2:
-    #                 tags[row[0]] = row[1]
-
-    return tags    
+    return tags
 
 
 def create_or_get_tag(tag_id):

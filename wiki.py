@@ -6,7 +6,7 @@ from pathlib import Path
 
 from py.wiki.config import Config
 from py.wiki.pages import create_page
-from py.wiki.tags import load_tags
+from py.wiki.tags import load_tags, get_tag_counts
 
 def handle_delete_page():
     pass
@@ -52,10 +52,11 @@ def parse_arguments(parser):
 
 def display_tags():
     tags = load_tags()
-    headers = ["Tag ID", "Description"]
+    counts = get_tag_counts(tags)
+    headers = ["Tag ID", "Description", "Uses"]
     data = []
     for key in tags.keys():
-        data.append([key, tags[key]])
+        data.append([key, tags[key], counts[key] if key in counts.keys() else 0])
 
     table = tabulate(data, headers, tablefmt="grid")
     print(table)
