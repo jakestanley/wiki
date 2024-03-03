@@ -20,7 +20,7 @@ def create_index_page(content, fm_data):
 def build_index():
     tags = load_tags()
     markdown_text = "# Tags"
-    for tag in tags.keys():
+    for tag in sorted(tags.keys()):
         markdown_text += f"\n- [{tags[tag]} ({tag})](./{tag}.html)"
 
     markdown_text += "\n"
