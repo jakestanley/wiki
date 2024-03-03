@@ -2,3 +2,4 @@ paramiko
 python-frontmatter
 pyyaml
 tabulate
+pypandoc

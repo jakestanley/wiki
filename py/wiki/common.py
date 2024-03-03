@@ -15,9 +15,9 @@ def load_fm(md_filename):
 def sanitize_name(name):
     """Convert a human-readable name to a sanitized ID."""
     id = re.sub(r'[^a-z0-9]+', '-', name.lower()).strip('-')
-    if id == 'untagged':
+    if id in ['untagged', 'index']:
         # TODO: warning - this could result in a partially completed transaction
-        raise UserWarning(f"Error: Cannot use name '{name}' as 'untagged' is reserved")
+        raise UserWarning(f"Error: Cannot use name '{name}' as '{id}' is reserved")
     return id
 
 # TODO: defer to make transactional

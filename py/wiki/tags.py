@@ -30,7 +30,9 @@ def load_tags():
 
     directory = Config().pages_dir
     for filename in os.listdir(directory):
-        if filename.endswith(".md"):
+        if filename == "index.md":
+            continue
+        elif filename.endswith(".md"):
             # a page is also a tag
             filepath = os.path.join(directory, filename)
 
@@ -39,3 +41,21 @@ def load_tags():
             tags[tag] = title
 
     return tags
+
+def load_pages():
+
+    pages = {}
+
+    directory = Config().pages_dir
+    for filename in os.listdir(directory):
+        if filename.endswith(".md"):
+            page = {}
+            filepath = os.path.join(directory, filename)
+            tag = os.path.splitext(os.path.basename(filepath))[0]
+
+            fm_data = load_fm(filepath)
+            page['title'] = fm_data['title']
+            page['tags'] = fm_data['tags']
+            pages[tag] = page
+
+    return pages

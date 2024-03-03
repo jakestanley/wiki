@@ -8,6 +8,7 @@ from py.wiki.arguments import parse_arguments
 from py.wiki.config import Config
 from py.wiki.pages import create
 from py.wiki.tags import load_tags, get_tag_counts
+from py.wiki.builder import build_index, render
 
 
 def do_create_action(args):
@@ -55,7 +56,8 @@ def merge_items(title, items):
 
 
 def do_build_action():
-    tags = load_tags()
+    build_index()
+    render()
     return
 
 
