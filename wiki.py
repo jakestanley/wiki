@@ -1,10 +1,12 @@
 import argparse
+from tabulate import tabulate
 
 from typing import List
 from pathlib import Path
 
 from py.wiki.config import Config
 from py.wiki.pages import create_page
+from py.wiki.tags import load_tags
 
 def handle_delete_page():
     pass
@@ -29,10 +31,13 @@ def parse_arguments(parser):
     # tag_subparsers.add_parser('list', help='List tags')
     # tag_subparsers.add_parser('delete', help='Delete a tag')
 
-    # page subcommand
+    # create-page subcommand
     page_parser: argparse.ArgumentParser = subparsers.add_parser('create-page', help='Create a page')
     page_parser.add_argument("--title", "-n", help="Title of the page")
     page_parser.add_argument("--tags", "-t", nargs='+', help="List of page tags")
+
+    # list-tags subcommand
+    list_tags_parser : argparse.ArgumentParser = subparsers.add_parser('list-tags', help='List tags')
 
     # page_subparsers = page_parser.add_subparsers(dest="page_action", help="Page actions")
     # page_subparsers.add_parser('create', help='Create or update a page')
@@ -45,14 +50,21 @@ def parse_arguments(parser):
     #   in that really pages are just leaves
     return parser.parse_args()
 
+def display_tags():
+    tags = load_tags()
+    headers = ["Tag ID", "Description"]
+    data = []
+    for key in tags.keys():
+        data.append([key, tags[key]])
+
+    table = tabulate(data, headers, tablefmt="grid")
+    print(table)
+
 def process(args):
     if args.action == 'create-page':
         return create_page(args.title, set(args.tags) if args.tags else set())
-    elif args.action == 'tag':
-        if args.tag_action == 'list':
-            return handle_list_tags()
-        elif args.tag_action == 'delete':
-            return handle_delete_tag()
+    elif args.action == 'list-tags':
+        return display_tags()
 
     raise UserWarning("Unrecognised command input")
 

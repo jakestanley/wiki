@@ -1,3 +1,4 @@
 paramiko
 python-frontmatter
 pyyaml
+tabulate
