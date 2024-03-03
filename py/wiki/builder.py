@@ -1,5 +1,6 @@
 import os
 import pypandoc
+import frontmatter
 
 from pathlib import Path
 
@@ -7,12 +8,13 @@ from py.wiki.config import Config
 from py.wiki.tags import load_tags
 
 
-def create_index_page(content):
+def create_index_page(content, fm_data):
 
     md_filename = os.path.join(Config().pages_dir, f"index.md")
 
+    page = frontmatter.Post(content, **fm_data)
     with open(md_filename, "w") as md_file:
-        md_file.write(content)
+        md_file.write(frontmatter.dumps(page))
 
 
 def build_index():
@@ -22,7 +24,11 @@ def build_index():
         markdown_text += f"\n- [{tags[tag]} ({tag})](./{tag}.html)"
 
     markdown_text += "\n"
-    create_index_page(markdown_text)
+    fm_data = {
+        "title": "Wiki"
+    }
+    create_index_page(markdown_text, fm_data)
+
     return
 
 
@@ -42,7 +48,7 @@ def render():
         if filename.endswith(".md"):
             filepath = os.path.join(pages_directory, filename)
             tag = os.path.splitext(os.path.basename(filepath))[0]
-            html_text = pypandoc.convert_file(filepath, "html", format="md")
+            html_text = pypandoc.convert_file(filepath, "html", format="md", extra_args=['-s', '-c', "https://jakestanley.co.uk/style.css"])
             html_filename = os.path.join(html_directory, f"{tag}.html")
             with open(html_filename, "w") as html_file:
                 html_file.write(html_text)
