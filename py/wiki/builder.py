@@ -5,7 +5,7 @@ import frontmatter
 from pathlib import Path
 
 from py.wiki.config import Config
-from py.wiki.tags import load_tags
+from py.wiki.tags import load_tags, load_pages
 
 
 def create_index_page(content, fm_data):
@@ -19,9 +19,14 @@ def create_index_page(content, fm_data):
 
 def build_index():
     tags = load_tags()
+    pages = load_pages()
     markdown_text = "# Tags"
     for tag in sorted(tags.keys()):
         markdown_text += f"\n- [{tags[tag]} ({tag})](./{tag}.html)"
+        for pk in pages.keys():
+            page = pages[pk]
+            if tag in page['tags']:
+                markdown_text += f"\n\t- [{page['title']}](./{pk}.html)"
 
     markdown_text += "\n"
     fm_data = {

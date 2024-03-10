@@ -49,6 +49,8 @@ def load_pages():
     directory = Config().pages_dir
     for filename in os.listdir(directory):
         if filename.endswith(".md"):
+            if filename == "index.md":
+                continue
             page = {}
             filepath = os.path.join(directory, filename)
             tag = os.path.splitext(os.path.basename(filepath))[0]
