@@ -1,6 +1,6 @@
 ---
 tags: []
-title: lan-party
+title: LAN party
 ---
 
 # lan-party
