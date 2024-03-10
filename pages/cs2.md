@@ -76,5 +76,10 @@ On Ubuntu 22.04 LTS, the `powersave` governor is enabled by default. You may wis
 - From the CS2 repository, install server mods if you wish with the `install_server_mods.sh` script
     - Note that you may need to update the URLs in the script to latest releases
     - Currently only deathmatch mod is installed by the script
+- Ensure that $HOME/games/game/csgo/gameinfo.gi has the line
+    - Game    csgo/addons/metamod
+    - directly underneath
+    - Game_LowViolence    csgo_lv
+- If this is set up correctly, the server command 'meta list' should work
 
 ### Configure deathmatch mod
